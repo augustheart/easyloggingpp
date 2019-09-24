@@ -138,6 +138,7 @@
 #      define _ELPP_QT_5 0
 #   endif // (defined(QT_VERSION) && QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
 #endif // defined(QT_CORE_LIB)
+
 //
 // High-level log evaluation
 //
@@ -475,7 +476,7 @@ public:
 #elif _ELPP_OS_WINDOWS
         PATH_SLASH                    ("\\"),
 #endif // _ELPP_OS_UNIX,
-        DEFAULT_LOG_FILENAME          ("zxlog.txt")
+        DEFAULT_LOG_FILENAME          ("")
     {
         // Trivial logger configuration - only to set format (difference: not using %logger)
         std::stringstream ss;
@@ -1510,7 +1511,7 @@ public:
         setAll(ConfigurationType::Filename, "/tmp/logs/myeasylog.log");
 #   endif // _ELPP_NDK
 #elif _ELPP_OS_WINDOWS
-        setAll(ConfigurationType::Filename, "zxhelper\\zxlog.txt");
+        //setAll(ConfigurationType::Filename, "wmgjhelper\\zxlog.txt");
 #endif // _ELPP_OS_UNIX
         setAll(ConfigurationType::ToFile, "true");
         setAll(ConfigurationType::ToStandardOutput, "true");
@@ -3139,7 +3140,13 @@ private:
 
     void safeWriteToFile(unsigned int level_, Logger* logger_, const std::string& line) {
         std::string baseFilename_ = logger_->typedConfigurations_->filename(level_);
+		if (baseFilename_.empty()) {
+			return;
+		}
         std::fstream* fstr = logger_->typedConfigurations_->fileStream(level_);
+		if(!fstr){
+			return;
+		}
         (*fstr) << line;
         fstr->flush();
         Logger* currLogger_ = NULL;
